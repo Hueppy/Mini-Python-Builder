@@ -14,13 +14,14 @@
 #include "builtins-setup.h"
 #include "type-hierarchy/bound-method.h"
 #include "literals/str.h"
+#include "literals/tuple.h"
 
 
 typedef struct __MPyListContent {
     unsigned int capacity;
     unsigned int size;
     __MPyObj **values;
-//    __MPyObj *boolMethod;
+    __MPyObj *strMethod;
 } __MPyListContent;
 
 void __mpy_obj_cleanup_list(__MPyObj *self) {
@@ -33,8 +34,10 @@ void __mpy_obj_cleanup_list(__MPyObj *self) {
 }
 
 __MPyObj* __mpy_list_get_attr_impl(__MPyObj *self, const char *name) {
+    __MPyListContent *content = (__MPyListContent*) self->content;
+
     if (strcmp("__str__", name) == 0) {
-        return __MPyFunc_List_str;
+        return content->strMethod;
     }
 
     return NULL;
@@ -51,6 +54,8 @@ __MPyObj* __mpy_obj_init_list() {
     content->capacity = 1;
     content->size = 0;
     content->values = __mpy_checked_malloc(sizeof(__MPyObj*) * content->capacity);
+
+    content->strMethod = __mpy_bind_func(__MPyFunc_List_str, obj);
 
     return __mpy_obj_return(obj);
 }
@@ -128,6 +133,55 @@ __MPyObj* __mpy_list_get_at(__MPyObj *self, unsigned int pos) {
 }
 
 __MPyObj* __mpy_list_func_str_impl(__MPyObj *args, __MPyObj *kwargs) {
-    // TODO: provide proper __str__ implementation
-    return __mpy_obj_return(__mpy_obj_init_str_static("List"));
+    assert(args != NULL && kwargs != NULL);
+
+    __MPyGetArgsState argHelper = __mpy_args_init("list.__str__", args, kwargs, 1);
+    __MPyObj *self = __mpy_args_get_positional(&argHelper, 0, "self");
+    __mpy_args_finish(&argHelper);
+
+    __MPyListContent *content = (__MPyListContent*)self->content;
+
+    __MPyObj *strs = __mpy_obj_init_list();
+    unsigned int len = 3; // 2 for enclosing [] + 1 for null terminator
+    for (unsigned int i = 0; i < content->size; i++) {
+        if (i > 0) {
+            // account for leading ','
+            len++;
+        }
+
+        __MPyObj *obj = __mpy_list_get_at(self, i);
+        __mpy_obj_ref_inc(obj);
+
+        __MPyObj *str = __mpy_call(__mpy_obj_get_attr(obj, "__str__"), __mpy_obj_init_tuple(0), NULL);
+        __mpy_obj_ref_inc(str);
+
+        __mpy_list_add(str, strs);
+
+        len += strlen(__mpy_str_as_c_str(str));
+
+        __mpy_obj_ref_dec(str);
+        __mpy_obj_ref_dec(obj);
+    }
+
+    char *s = __mpy_checked_malloc(len);
+    memset(s, 0, len);
+
+    strcat(s, "[");
+    for (unsigned int i = 0; i < content->size; i++) {
+        if (i > 0) {
+            strcat(s, ",");
+        }
+
+        __MPyObj *str = __mpy_list_get_at(strs, i);
+        __mpy_obj_ref_inc(str);
+
+        strcat(s, __mpy_str_as_c_str(str));
+
+        __mpy_obj_ref_dec(str);
+    }
+    strcat(s, "]");
+
+    __mpy_obj_ref_dec(strs);
+
+    return __mpy_obj_return(__mpy_obj_init_str_dynamic(s));
 }

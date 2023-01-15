@@ -27,7 +27,7 @@ public class ListLiteral implements Literal {
     public String buildExpression() {
         StringBuilder tupleInit = new StringBuilder();
 
-        for (int i = 0; i < elems.size(); i++) {
+        for (int i = elems.size() - 1; i >= 0; i--) {
             tupleInit.append("__mpy_list_add(" + elems.get(i).buildExpression() + ", ");
         }
         tupleInit.append("__mpy_obj_init_list()");

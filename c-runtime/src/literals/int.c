@@ -214,3 +214,8 @@ __MPyObj* __mpy_obj_init_int(__mpy_int_c_type value) {
     return __mpy_obj_return(obj);
 }
 
+__mpy_int_c_type __mpy_int_value(__MPyObj *self) {
+    MPyIntContent *content = (MPyIntContent*)self->content;
+    return content->value;
+}
+

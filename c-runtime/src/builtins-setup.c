@@ -12,6 +12,7 @@
 #include "builtin-functions/print.h"
 #include "builtin-functions/type.h"
 #include "builtin-functions/input.h"
+#include "builtin-functions/range.h"
 #include "simple_hash_map.h"
 #include "type-hierarchy/bound-method.h"
 #include "type-hierarchy/type.h"
@@ -46,6 +47,8 @@ __MPyObj *__MPyFunc_print;
 __MPyObj *__MPyFunc_type;
 
 __MPyObj *__MPyFunc_input;
+
+__MPyObj *__MPyFunc_range;
 
 __MPyObj *__MPyFunc_Type_str;
 
@@ -165,6 +168,9 @@ void __mpy_builtins_setup() {
 
     __MPyFunc_input = __mpy_obj_init_func(&__mpy_func_input);
     __mpy_obj_ref_inc(__MPyFunc_input);
+
+    __MPyFunc_range = __mpy_obj_init_func(&__mpy_func_range);
+    __mpy_obj_ref_inc(__MPyFunc_range);
 
     __MPyFunc_Type_str = __mpy_obj_init_func(&__mpy_type_func_str_impl);
     __mpy_obj_ref_inc(__MPyFunc_Type_str);
@@ -349,6 +355,8 @@ void __mpy_builtins_cleanup() {
     __mpy_obj_ref_dec(__MPyFunc_type);
 
     __mpy_obj_ref_dec(__MPyFunc_input);
+
+    __mpy_obj_ref_dec(__MPyFunc_range);
 
     __mpy_obj_ref_dec(__MPyFunc_Type_str);
 

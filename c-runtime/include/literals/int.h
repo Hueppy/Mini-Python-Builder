@@ -42,4 +42,6 @@ __MPyObj* __mpy_int_func_gt_impl(__MPyObj *args, __MPyObj *kwargs);
 
 __MPyObj* __mpy_int_func_lt_impl(__MPyObj *args, __MPyObj *kwargs);
 
+__mpy_int_c_type __mpy_int_value(__MPyObj *self);
+
 #endif

@@ -31,6 +31,8 @@ extern __MPyObj *__MPyFunc_type;
 
 extern __MPyObj *__MPyFunc_input;
 
+extern __MPyObj *__MPyFunc_range;
+
 extern __MPyObj *__MPyFunc_Type_str;
 
 extern __MPyObj *__MPyFunc_Int_str;

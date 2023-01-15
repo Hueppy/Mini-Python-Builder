@@ -6,6 +6,7 @@
 #include "builtin-functions/super.h"
 #include "literals/boolean.h"
 #include "literals/tuple.h"
+#include "literals/list.h"
 #include "mpy_obj.h"
 #include "builtin-functions/id.h"
 #include "builtin-functions/print.h"
@@ -33,6 +34,8 @@ __MPyObj *__MPyType_None;
 __MPyObj *__MPyType_Type;
 
 __MPyObj *__MPyType_Str;
+
+__MPyObj *__MPyType_List;
 
 __MPyObj *__MPyType_Boolean;
 
@@ -94,6 +97,8 @@ __MPyObj *__MPyFunc_Str_add;
 
 __MPyObj *__MPyFunc_Str_int;
 
+__MPyObj *__MPyFunc_List_str;
+
 // compare strings
 __MPyObj *__MPyFunc_Str_eq;
 __MPyObj *__MPyFunc_Str_ne;
@@ -144,6 +149,8 @@ void __mpy_builtins_setup() {
     __MPyType_Type = __mpy_obj_new();
 
     __MPyType_Str = __mpy_obj_new();
+
+    __MPyType_List = __mpy_obj_new();
 
     __MPyType_Boolean = __mpy_obj_new();
 
@@ -296,6 +303,15 @@ void __mpy_builtins_setup() {
     __mpy_obj_init_type_builtin("str", __MPyType_Str, __mpy_hash_map_init(&__mpy_hash_map_str_key_cmp), __MPyType_Object);
     __mpy_obj_ref_inc(__MPyType_Str);
 
+    __MPyFunc_List_str = __mpy_obj_init_func(&__mpy_list_func_str_impl);
+    __mpy_obj_ref_inc(__MPyFunc_List_str);
+
+    __MPyHashMap *typeListAttrs = __mpy_hash_map_init(&__mpy_hash_map_str_key_cmp);
+    __mpy_obj_ref_inc(__MPyFunc_List_str);
+    __mpy_hash_map_put(typeListAttrs, "__str__", __MPyFunc_List_str);
+    __mpy_obj_init_type_builtin("list", __MPyType_List, typeListAttrs, __MPyType_Object);
+    __mpy_obj_ref_inc(__MPyType_List);
+
     // FIXME(florian): this should inherit from integral, a common parent type for ints and bools
     // (cf. https://docs.python.org/3/reference/datamodel.html#the-standard-type-hierarchy)
     __mpy_obj_init_type_builtin("bool", __MPyType_Boolean, __mpy_hash_map_init(&__mpy_hash_map_str_key_cmp), __MPyType_Object);
@@ -322,6 +338,8 @@ void __mpy_builtins_cleanup() {
 
     __mpy_obj_ref_dec(__MPyType_Str);
 
+    __mpy_obj_ref_dec(__MPyType_List);
+
     __mpy_obj_ref_dec(__MPyType_Boolean);
 
     __mpy_obj_ref_dec(__MPyFunc_id);
@@ -337,6 +355,8 @@ void __mpy_builtins_cleanup() {
     __mpy_obj_ref_dec(__MPyFunc_Type_call);
 
     __mpy_obj_ref_dec(__MPyFunc_Int_str);
+
+    __mpy_obj_ref_dec(__MPyFunc_List_str);
 
     __mpy_obj_ref_dec(__MPyFunc_Str_str);
 

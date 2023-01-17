@@ -12,7 +12,7 @@ public class ListReference implements Expression {
     /**
      * The element index
      */
-    protected int index;
+    protected Expression index;
 
     /**
      * Create a new reference for a specific element in a list
@@ -20,7 +20,7 @@ public class ListReference implements Expression {
      * @param object List object
      * @param index Element index
      */
-    public ListReference(CBuilder.Expression object, int index) {
+    public ListReference(CBuilder.Expression object, Expression index) {
         this.object = object;
         this.index = index;
     }
@@ -28,7 +28,7 @@ public class ListReference implements Expression {
 
     @Override
     public String buildExpression() {
-        return String.format("__mpy_list_get_at(%s, %d)", object.buildExpression(), index);
+        return String.format("__mpy_list_get_at(%s, __mpy_int_value(%s))", object.buildExpression(), index.buildExpression());
     }
 
     @Override

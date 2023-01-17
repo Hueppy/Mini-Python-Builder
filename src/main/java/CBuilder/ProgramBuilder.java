@@ -36,6 +36,7 @@ public class ProgramBuilder {
             // building function args
             "function-args",
             "literals/tuple",
+            "literals/list",
             "literals/int",
             "literals/boolean",
             "literals/str",

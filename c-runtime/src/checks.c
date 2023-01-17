@@ -19,4 +19,14 @@ void *__mpy_checked_malloc(size_t size) {
     return mem;
 }
 
+void *__mpy_checked_realloc(void *ptr, size_t size) {
+    void *mem = realloc(ptr, size);
+    if (mem == NULL) {
+        fprintf(stderr, "ERROR: Out of Memory");
+        __mpy_fatal_error(__MPY_ERROR_EXTERNAL);
+    }
+
+    return mem;
+}
+
 

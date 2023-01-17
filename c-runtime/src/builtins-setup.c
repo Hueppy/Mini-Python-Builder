@@ -92,6 +92,8 @@ __MPyObj *__MPyFunc_Int_lt;
 
 __MPyObj *__MPyFunc_Tuple_bool;
 
+__MPyObj *__MPyFunc_Tuple_str;
+
 __MPyObj *__MPyFunc_Str_str;
 
 __MPyObj *__MPyFunc_Str_bool;
@@ -222,6 +224,9 @@ void __mpy_builtins_setup() {
 
     __MPyFunc_Tuple_bool = __mpy_obj_init_func(&__mpy_tuple_func_bool_impl);
     __mpy_obj_ref_inc(__MPyFunc_Tuple_bool);
+
+    __MPyFunc_Tuple_str = __mpy_obj_init_func(&__mpy_tuple_func_str_impl);
+    __mpy_obj_ref_inc(__MPyFunc_Tuple_str);
 
     __MPyFunc_Str_str = __mpy_obj_init_func(&__mpy_str_func_str_impl);
     __mpy_obj_ref_inc(__MPyFunc_Str_str);

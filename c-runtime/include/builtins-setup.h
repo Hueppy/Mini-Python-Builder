@@ -73,6 +73,8 @@ extern __MPyObj *__MPyFunc_Int_lt;
 
 extern __MPyObj *__MPyFunc_Tuple_bool;
 
+extern __MPyObj *__MPyFunc_Tuple_str;
+
 extern __MPyObj *__MPyFunc_Str_str;
 
 extern __MPyObj *__MPyFunc_Str_bool;

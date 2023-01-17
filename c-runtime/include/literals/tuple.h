@@ -15,5 +15,7 @@ void __mpy_tuple_foreach(__MPyObj *self, void (*action) (__MPyObj* obj));
 
 __MPyObj *__mpy_tuple_func_bool_impl(__MPyObj *args, __MPyObj *kwargs);
 
+__MPyObj* __mpy_tuple_func_str_impl(__MPyObj *args, __MPyObj *kwargs);
+
 #endif
 
